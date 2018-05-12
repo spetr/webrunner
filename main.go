@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os/exec"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -48,7 +49,7 @@ func main() {
 			wg.Add(len(job.Tasks))
 			for _, task := range job.Tasks {
 				go func(name, file, param string) {
-					response, _ := exec.Command(file, param).Output()
+					response, _ := exec.Command(file, strings.Split(param, "+")...).Output()
 					responses[name] = string(response)
 					wg.Done()
 				}(task.Name, task.File, param)
