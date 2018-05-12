@@ -1,15 +1,22 @@
+%YAML 1.1
+---
+
 # Listenning IP address
-listen: ":8080"
+listen: :8080
+
+# Show debugging informations
+debug: false
 
 # List of allowed IP addresses
 acl:
-  - "127.0.0.1"
+  - 127.0.0.1
 
 # Jobs (sets of scripts)
 jobs:
   - name: getdata
     tasks:
-      - name: "script1"
+      - name: script1
         file: "./script1.sh"
-      - name: "script2"
+      - name: script2
         file: "./script2.sh"
+...

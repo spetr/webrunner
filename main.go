@@ -16,6 +16,7 @@ type (
 	TConf struct {
 		Listen string
 		ACL    []string
+		Debug  bool
 		Jobs   []struct {
 			Name  string
 			Tasks []struct {
@@ -34,7 +35,9 @@ var (
 
 func main() {
 	parseConfig()
-	//gin.SetMode(gin.ReleaseMode)
+	if conf.Debug == false {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router = gin.Default()
 
 	for _, job := range conf.Jobs {
