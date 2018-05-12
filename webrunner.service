@@ -1,0 +1,13 @@
+[Unit]
+Description=Webrunner Service
+After=network.target
+
+[Service]
+Type=simple
+User=nobody
+WorkingDirectory=/tmp
+ExecStart=/usr/local/sbin/webrunner -conf=/etc/webrunner.yaml
+Restart=on-failure # or always, on-abort, etc
+
+[Install]
+WantedBy=multi-user.target
