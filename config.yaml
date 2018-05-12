@@ -1,6 +1,11 @@
+# Listenning IP address
 listen: ":8080"
+
+# List of allowed IP addresses
 acl:
   - "127.0.0.1"
+
+# Jobs (sets of scripts)
 jobs:
   - name: getdata
     tasks:
