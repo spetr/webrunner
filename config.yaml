@@ -1,8 +1,10 @@
 listen: ":8080"
-acl: [ "127.0.0.1" ]
+acl:
+  - "127.0.0.1"
 jobs:
-        - name: "script1"
-          file: "./script1.sh"
-        - name: "script2"
-          file: "./script2.sh"
-
+  - name: getdata
+    tasks:
+      - name: "script1"
+        file: "./script1.sh"
+      - name: "script2"
+        file: "./script2.sh"

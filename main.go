@@ -17,8 +17,11 @@ type (
 		Listen string
 		ACL    []string
 		Jobs   []struct {
-			Name string
-			File string
+			Name  string
+			Tasks []struct {
+				Name string
+				File string
+			}
 		}
 	}
 )
@@ -31,25 +34,27 @@ var (
 
 func main() {
 	parseConfig()
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	router = gin.Default()
 
-	router.GET("/getdata/:domain", func(c *gin.Context) {
-		var wg sync.WaitGroup
-		responses := make(map[string]string)
-		param := c.Param("domain")
-		wg.Add(len(conf.Jobs))
-		for _, v := range conf.Jobs {
-			go func(name, file, param string) {
-				response, _ := exec.Command(file, param).Output()
-				responses[name] = string(response)
-				wg.Done()
-			}(v.Name, v.File, param)
-		}
-		wg.Wait()
-		jsonResponse, _ := json.Marshal(responses)
-		c.String(http.StatusOK, string(jsonResponse))
-	})
+	for _, job := range conf.Jobs {
+		router.GET("/"+job.Name+"/:domain", func(c *gin.Context) {
+			var wg sync.WaitGroup
+			responses := make(map[string]string)
+			param := c.Param("domain")
+			wg.Add(len(job.Tasks))
+			for _, task := range job.Tasks {
+				go func(name, file, param string) {
+					response, _ := exec.Command(file, param).Output()
+					responses[name] = string(response)
+					wg.Done()
+				}(task.Name, task.File, param)
+			}
+			wg.Wait()
+			jsonResponse, _ := json.Marshal(responses)
+			c.String(http.StatusOK, string(jsonResponse))
+		})
+	}
 
 	router.Run(":8080")
 }
