@@ -34,12 +34,32 @@ var (
 	configFile = "config.yaml"
 )
 
+func aclContains(str string) bool {
+	for _, a := range conf.ACL {
+		if a == str {
+			return true
+		}
+	}
+	return false
+}
+
+func acl() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if aclContains(c.ClientIP()) {
+			c.Next()
+		} else {
+			c.String(http.StatusForbidden, "403 forbidden")
+		}
+	}
+}
+
 func main() {
 	parseConfig()
 	if conf.Debug == false {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router = gin.Default()
+	router.Use(acl())
 
 	for _, job := range conf.Jobs {
 		router.GET("/"+job.Name+"/:domain", func(c *gin.Context) {
