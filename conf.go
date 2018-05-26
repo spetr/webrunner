@@ -8,7 +8,7 @@ import (
 )
 
 func parseConfig() {
-	configFile, err := ioutil.ReadFile(configFile)
+	configFile, err := ioutil.ReadFile(*configFile)
 	if err != nil {
 		log.Fatal("Configuration: Can not read configuration")
 	}

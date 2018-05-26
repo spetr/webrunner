@@ -4,6 +4,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -31,7 +32,7 @@ type (
 var (
 	router     *gin.Engine
 	conf       TConf
-	configFile = "config.yaml"
+	configFile *string
 )
 
 func aclContains(str string) bool {
@@ -54,6 +55,7 @@ func acl() gin.HandlerFunc {
 }
 
 func main() {
+	configFile = flag.String("conf", "/etc/webrunner.yaml", "")
 	parseConfig()
 	if conf.Debug == false {
 		gin.SetMode(gin.ReleaseMode)
